@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.onnx
+*.pt
+*.ckpt
+results/*.csv
+.DS_Store
+.env
+
+# personal command reference — not portfolio content
+COMMANDS.md
