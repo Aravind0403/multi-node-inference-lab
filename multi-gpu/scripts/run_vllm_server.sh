@@ -39,5 +39,4 @@ python3 -m vllm.entrypoints.openai.api_server \
     --gpu-memory-utilization 0.90 \
     --max-model-len 8192 \
     --trust-remote-code \
-    --disable-log-requests \
     $EXTRA_ARGS
