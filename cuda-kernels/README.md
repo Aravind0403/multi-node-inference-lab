@@ -8,6 +8,6 @@
 - `attention_core.cu` — inner-loop only, annotated against what FlashAttention optimizes for
 - Profile a real vLLM attention kernel with `nsys`/`ncu`, compare against `matmul_tiled.cu`'s profile
 
-**Write-up (once done):** *What I Learned Writing and Profiling My First CUDA Kernels*
+**Write-up:** [*What I Learned Writing and Profiling My First CUDA Kernel*](./WRITEUP.md)
 
-Status: not started.
+Status: **Done.** vector_add.cu + matmul_tiled.cu built and benchmarked; attention_core.cu and real vLLM profiling deliberately descoped (see ../TRADEOFFS.md).

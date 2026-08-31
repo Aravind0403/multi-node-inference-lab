@@ -8,6 +8,11 @@ venv/
 results/*.csv
 .DS_Store
 .env
+.vscode/
 
 # personal command reference — not portfolio content
 COMMANDS.md
+
+# per-phase interview practice logs — personal prep material, not portfolio content
+# (insights get distilled into each phase's WRITEUP.md instead)
+**/INTERVIEW_QUESTIONS.md

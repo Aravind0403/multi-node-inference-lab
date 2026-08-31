@@ -10,9 +10,9 @@ Every phase below produces working code and a technical write-up. Raw findings a
 
 | # | Phase | Question being tested | Status | Write-up |
 |---|-------|------------------------|--------|----------|
-| 1 | [CUDA Fundamentals + Profiling](./cuda-kernels/) | Where does an inference kernel actually spend its time — compute or memory? | Not started | — |
-| 2 | [SGLang & vLLM Internals](./sglang-internals/) | How do two production schedulers differ in design, and does it matter empirically? | Not started | — |
-| 3 | [Disaggregated Serving](./disaggregated-serving/) | Where does prefill/decode separation help, and where does it not? | Not started | — |
+| 1 | [CUDA Fundamentals + Profiling](./cuda-kernels/) | Where does an inference kernel actually spend its time — compute or memory? | Done | [Write-up](./cuda-kernels/WRITEUP.md) |
+| 2 | [SGLang & vLLM Internals](./sglang-internals/) | How do two production schedulers differ in design, and does it matter empirically? | Done | [Write-up](./sglang-internals/WRITEUP.md) |
+| 3 | [Disaggregated Serving](./disaggregated-serving/) | Where does prefill/decode separation help, and where does it not? | In progress — Clairvoyant v2 built, simulator + real-dataset benchmarks done, interview Q&A through Hard tier; real-GPU run pending | — |
 | 4 | [Multi-GPU Deployment](./multi-gpu/) | Where's the real bottleneck when scaling — communication or compute? | Not started | — |
 | 5 | [Distributed Training Awareness](./training-awareness/) | How does training infra differ structurally from inference infra? | Not started | — |
 

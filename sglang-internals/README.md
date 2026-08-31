@@ -9,4 +9,4 @@
 
 **Write-up (once done):** *vLLM vs. SGLang: A Comparative Study from the Perspective of a Scheduler Builder*
 
-Status: not started.
+Status: Done. Internals map: [INTERNALS_MAP.md](./INTERNALS_MAP.md). PR filed: [sgl-project/sglang#37067](https://github.com/sgl-project/sglang/pull/37067) (awaiting review). Full Basic/Medium/Hard interview Q&A complete, all staff-level: [INTERVIEW_QUESTIONS.md](./INTERVIEW_QUESTIONS.md). Write-up: [WRITEUP.md](./WRITEUP.md). Descoped: empirical prefix-sharing benchmark (vLLM vs. SGLang on T4) — blocked on Colab multi-stack GPU setup, deferred to Phase 4's paid GPU environment.
