@@ -66,53 +66,94 @@ def plot_tp_scaling(df: pd.DataFrame, output_dir: str):
     os.makedirs(output_dir, exist_ok=True)
     fig, axes = plt.subplots(1, 3, figsize=(18, 5.5))
 
-    tp1 = df[df["tp_size"] == 1].sort_values("concurrency")
-    tp2 = df[df["tp_size"] == 2].sort_values("concurrency")
+    tp2_standard = df[(df["tp_size"] == 2) & (~df["prefix_caching_enabled"])].sort_values("concurrency")
+    tp2_cached = df[(df["tp_size"] == 2) & (df["prefix_caching_enabled"])].sort_values("concurrency")
 
     # 1. Throughput vs Concurrency
     ax = axes[0]
-    if not tp1.empty:
-        ax.plot(tp1["concurrency"], tp1["output_tok_per_sec"], marker="o", label="TP=1", color="#e74c3c", linewidth=2.2)
-    if not tp2.empty:
-        ax.plot(tp2["concurrency"], tp2["output_tok_per_sec"], marker="s", label="TP=2", color="#2ecc71", linewidth=2.2)
+    if not tp2_standard.empty:
+        ax.plot(tp2_standard["concurrency"], tp2_standard["output_tok_per_sec"], marker="o", label="TP=2 (Standard)", color="#e74c3c", linewidth=2.2)
+    if not tp2_cached.empty:
+        ax.plot(tp2_cached["concurrency"], tp2_cached["output_tok_per_sec"], marker="s", label="TP=2 (APC Cached)", color="#2ecc71", linewidth=2.2)
     ax.set_title("Throughput Scaling (Tokens/sec)", fontweight="bold")
     ax.set_xlabel("Concurrency (Concurrent Clients)")
     ax.set_ylabel("Output Tokens / sec")
     ax.set_xscale("log", base=2)
     ax.grid(True, linestyle="--", alpha=0.6)
-    ax.legend(title="TP Size")
+    ax.legend()
 
     # 2. ITL (TPOT) vs Concurrency
     ax = axes[1]
-    if not tp1.empty:
-        ax.plot(tp1["concurrency"], tp1["itl_p50_ms"], marker="o", label="TP=1", color="#e74c3c", linewidth=2.2)
-    if not tp2.empty:
-        ax.plot(tp2["concurrency"], tp2["itl_p50_ms"], marker="s", label="TP=2", color="#2ecc71", linewidth=2.2)
+    if not tp2_standard.empty:
+        ax.plot(tp2_standard["concurrency"], tp2_standard["itl_p50_ms"], marker="o", label="TP=2 (Standard)", color="#e74c3c", linewidth=2.2)
+    if not tp2_cached.empty:
+        ax.plot(tp2_cached["concurrency"], tp2_cached["itl_p50_ms"], marker="s", label="TP=2 (APC Cached)", color="#2ecc71", linewidth=2.2)
     ax.set_title("Inter-Token Latency (ITL / TPOT)", fontweight="bold")
     ax.set_xlabel("Concurrency (Concurrent Clients)")
     ax.set_ylabel("P50 ITL (ms/token)")
     ax.set_xscale("log", base=2)
     ax.grid(True, linestyle="--", alpha=0.6)
-    ax.legend(title="TP Size")
+    ax.legend()
 
     # 3. TTFT vs Concurrency
     ax = axes[2]
-    if not tp1.empty:
-        ax.plot(tp1["concurrency"], tp1["ttft_p50_ms"], marker="o", label="TP=1", color="#e74c3c", linewidth=2.2)
-    if not tp2.empty:
-        ax.plot(tp2["concurrency"], tp2["ttft_p50_ms"], marker="s", label="TP=2", color="#2ecc71", linewidth=2.2)
+    if not tp2_standard.empty:
+        ax.plot(tp2_standard["concurrency"], tp2_standard["ttft_p50_ms"], marker="o", label="TP=2 (Standard)", color="#e74c3c", linewidth=2.2)
+    if not tp2_cached.empty:
+        ax.plot(tp2_cached["concurrency"], tp2_cached["ttft_p50_ms"], marker="s", label="TP=2 (APC Cached)", color="#2ecc71", linewidth=2.2)
     ax.set_title("Time To First Token (TTFT)", fontweight="bold")
     ax.set_xlabel("Concurrency (Concurrent Clients)")
     ax.set_ylabel("P50 TTFT (ms)")
     ax.set_xscale("log", base=2)
     ax.grid(True, linestyle="--", alpha=0.6)
-    ax.legend(title="TP Size")
+    ax.legend()
 
     plt.tight_layout()
     plot_path = os.path.join(output_dir, "tp_scaling_curves.png")
     plt.savefig(plot_path, dpi=300)
     plt.close()
     print(f"Saved scaling curves plot to: {plot_path}")
+
+
+def plot_prefix_caching_impact(df: pd.DataFrame, output_dir: str):
+    os.makedirs(output_dir, exist_ok=True)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5))
+
+    tp2_standard = df[(df["tp_size"] == 2) & (~df["prefix_caching_enabled"])].sort_values("concurrency")
+    tp2_cached = df[(df["tp_size"] == 2) & (df["prefix_caching_enabled"])].sort_values("concurrency")
+
+    # 1. Throughput Comparison
+    ax = axes[0]
+    if not tp2_standard.empty and not tp2_cached.empty:
+        width = 0.35
+        x = np.arange(len(tp2_standard["concurrency"]))
+        ax.bar(x - width/2, tp2_standard["output_tok_per_sec"], width, label="Standard (No APC)", color="#3498db")
+        ax.bar(x + width/2, tp2_cached["output_tok_per_sec"], width, label="Automatic Prefix Caching (APC)", color="#2ecc71")
+        ax.set_xticks(x)
+        ax.set_xticklabels([str(c) for c in tp2_standard["concurrency"]])
+        ax.set_xlabel("Concurrency (Clients)")
+        ax.set_ylabel("Output Tokens / sec")
+        ax.set_title("Throughput Boost from Prefix Caching under TP=2", fontweight="bold")
+        ax.grid(True, linestyle="--", alpha=0.6)
+        ax.legend()
+
+    # 2. TTFT Reduction
+    ax = axes[1]
+    if not tp2_standard.empty and not tp2_cached.empty:
+        ax.plot(tp2_standard["concurrency"], tp2_standard["ttft_p50_ms"], marker="o", label="Standard TTFT", color="#e74c3c", linewidth=2.2)
+        ax.plot(tp2_cached["concurrency"], tp2_cached["ttft_p50_ms"], marker="s", label="Cached TTFT", color="#2ecc71", linewidth=2.2)
+        ax.set_xlabel("Concurrency (Clients)")
+        ax.set_ylabel("P50 TTFT (ms)")
+        ax.set_title("Prefill Latency (TTFT) Under Prefix Reuse", fontweight="bold")
+        ax.set_xscale("log", base=2)
+        ax.grid(True, linestyle="--", alpha=0.6)
+        ax.legend()
+
+    plt.tight_layout()
+    plot_path = os.path.join(output_dir, "prefix_caching_comparison.png")
+    plt.savefig(plot_path, dpi=300)
+    plt.close()
+    print(f"Saved prefix caching comparison plot to: {plot_path}")
 
 
 def main():
@@ -138,6 +179,7 @@ def main():
         df = pd.DataFrame(all_records)
 
     plot_tp_scaling(df, args.output_dir)
+    plot_prefix_caching_impact(df, args.output_dir)
 
 
 if __name__ == "__main__":
