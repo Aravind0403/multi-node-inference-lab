@@ -13,7 +13,7 @@ Every phase below produces working code and a technical write-up. Raw findings a
 | 1 | [CUDA Fundamentals + Profiling](./cuda-kernels/) | Where does an inference kernel actually spend its time — compute or memory? | Done | [Write-up](./cuda-kernels/WRITEUP.md) |
 | 2 | [SGLang & vLLM Internals](./sglang-internals/) | How do two production schedulers differ in design, and does it matter empirically? | Done | [Write-up](./sglang-internals/WRITEUP.md) |
 | 3 | [Disaggregated Serving](./disaggregated-serving/) | Where does prefill/decode separation help, and where does it not? | In progress — Clairvoyant v2 built, simulator + real-dataset benchmarks done, interview Q&A through Hard tier; real-GPU run pending | — |
-| 4 | [Multi-GPU Deployment](./multi-gpu/) | Where's the real bottleneck when scaling — communication or compute? | Not started | — |
+| 4 | [Multi-GPU Deployment](./multi-gpu/) | Where's the real bottleneck when scaling — communication or compute? | In progress — TP=2 vLLM deployment built and run on real hardware (2x RTX 4070 Ti SUPER); first-run numbers flagged unverified (hand-transcribed, no raw artifacts), prefix-caching result inverted and unexplained; clean re-run with machine-logged output planned next | — |
 | 5 | [Distributed Training Awareness](./training-awareness/) | How does training infra differ structurally from inference infra? | Done | [Write-up](./training-awareness/WRITEUP.md) |
 
 ## Repo structure
